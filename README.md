@@ -36,7 +36,6 @@
    ```bash
    git clone https://github.com/dongfang281127/flutter-quiz-app-android.git
 
-
 2. **获取依赖**
    ```bash
    flutter pub get
