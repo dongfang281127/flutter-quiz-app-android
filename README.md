@@ -34,7 +34,8 @@
 ### 运行步骤
 1. **克隆项目**
    ```bash
-   git clone [https://github.com/dongfang281127/-flutter-.git](https://github.com/dongfang281127/flutter-quiz-app-android.git)
+ git clone https://github.com/dongfang281127/flutter-quiz-app-android.git
+
 
 2. **获取依赖**
    ```bash
