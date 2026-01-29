@@ -1,16 +1,44 @@
-# flutter_first
+# 📚 高级智能题库系统 (Quiz Master) 🐍
 
-A new Flutter project.
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
-## Getting Started
+这是一款基于 **Flutter** 构建的高性能刷题应用。它不仅拥有精致的 UI 交互，更集成了练习、反馈与社交讨论于一体，是学习与测试的绝佳利器。
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## ✨ 核心功能亮点
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* **📖 全能练习模式**
+    * **顺序刷题**：稳扎稳打，按部就班掌握知识点。
+    * **随机挑战**：打乱顺序，模拟真实考试场景。
+* **📈 智能数据统计**
+    * **实时正确率**：答题过程中即时计算，进度一目了然。
+    * **练习报告**：记录你的成长轨迹。
+* **💬 社交讨论区**
+    * **题目评论**：每道题下方都有“大神”出没，支持思路交流与纠错。
+* **📬 意见信箱**
+    * **反馈系统**：内置信箱功能，用户建议直达开发者，持续优化体验。
+* **🎨 沉浸式体验**
+    * 精心设计的 UI 界面，支持流畅的动效切换。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 📸 界面预览
+
+> *提示：你可以在这里上传你的 App 截图，增加视觉冲击力！*
+> `![App Screenshot](你的图片链接)`
+
+---
+
+## 🚀 快速上手
+
+### 环境要求
+- Flutter SDK (Latest Version)
+- Android Studio / VS Code
+
+### 运行步骤
+1. **克隆项目**
+   ```bash
+   git clone [https://github.com/dongfang281127/-flutter-.git](https://github.com/dongfang281127/-flutter-.git)
