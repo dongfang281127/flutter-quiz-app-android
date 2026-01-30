@@ -225,7 +225,7 @@ class _AddPageState extends State<AddPage> {
                     controller: _groupNameCtrl,
                     decoration: InputDecoration(
                       labelText: "题库名称",
-                      hintText: "例如：康复医学期末复习",
+                      hintText: "例如：医学期末复习",
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       prefixIcon: const Icon(Icons.edit),
                       filled: true,

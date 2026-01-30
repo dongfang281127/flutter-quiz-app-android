@@ -98,7 +98,7 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('我的私人图书馆'), 
+        title: const Text('藏书阁'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh), 

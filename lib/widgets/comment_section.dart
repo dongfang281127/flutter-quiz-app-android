@@ -164,7 +164,7 @@ class _CommentSectionState extends State<CommentSection> {
             const Icon(Icons.lock_outline, size: 40, color: Colors.grey),
             const SizedBox(height: 10),
             Text(
-              "评论区已施加【赤胆忠心咒】\n答题或揭晓答案后解锁",
+              "尘封思绪，待君破局\n答题后解锁",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey[600]),
             ),
@@ -180,7 +180,7 @@ class _CommentSectionState extends State<CommentSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("巫师讨论区", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const Text("讨论区", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
 
         if (_isLoadingComments)

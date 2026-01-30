@@ -150,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('巫师档案')),
+      appBar: AppBar(title: const Text('智者信息')),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -204,8 +204,8 @@ class _ProfilePageState extends State<ProfilePage> {
           // --- 设置选项 ---
           SwitchListTile(
             secondary: Icon(widget.isDark ? Icons.nights_stay : Icons.wb_sunny),
-            title: const Text('斯莱特林环境模式'),
-            subtitle: Text(widget.isDark ? '当前：暗黑森林' : '当前：明亮教室'),
+            title: const Text('主题切换'),
+            subtitle: Text(widget.isDark ? '当前：夜晚' : '当前：白昼'),
             value: widget.isDark,
             onChanged: (bool value) => widget.onThemeChanged(),
           ),
@@ -214,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
           
           ListTile(
             leading: const Icon(Icons.mail_outline, color: Colors.blue),
-            title: const Text('我的猫头鹰信箱'),
+            title: const Text('意见信箱'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               // 跳转到刚才新建的信箱页

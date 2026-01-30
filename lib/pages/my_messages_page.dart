@@ -55,7 +55,7 @@ class _MyMessagesPageState extends State<MyMessagesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('猫头鹰信箱')),
+      appBar: AppBar(title: const Text('信箱')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _messages.isEmpty

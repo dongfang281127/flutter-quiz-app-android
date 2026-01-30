@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'main_screen.dart'; // ✨ 引入主页，因为我们要跳转过去
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  // ✨ 1. 接收主题参数，为了传给 MainScreen
+  final bool isDark;
+  final VoidCallback onThemeChanged;
+
+  const LoginPage({
+    super.key,
+    required this.isDark,
+    required this.onThemeChanged,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -14,14 +23,16 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _isLoginMode = true;
 
+  // 斯莱特林配色
+  final Color _accentGreen = const Color(0xFF2E8B57); // 祖母绿
+  final Color _textSilver = const Color(0xFFC0C0C0); // 银灰
+
   Future<void> _submit() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入邮箱和密码')),
-      );
+      _showMsg('请输入邮箱和密码', isError: true);
       return;
     }
 
@@ -31,43 +42,35 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       if (_isLoginMode) {
-        // 登录
         await Supabase.instance.client.auth.signInWithPassword(
           email: email,
           password: password,
         );
       } else {
-        // 注册
         await Supabase.instance.client.auth.signUp(
           email: email,
           password: password,
         );
       }
 
-      // ✨✨✨ 重点：这里不需要手动跳转了！✨✨✨
-      // main.dart 里的守卫检测到登录成功后，会自动切换页面。
-      // 我们只需要给个提示就好。
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_isLoginMode ? '欢迎回来！' : '注册成功！'),
-            backgroundColor: Colors.green,
+        _showMsg(_isLoginMode ? '欢迎归来' : '注册成功，已自动登录');
+
+        // ✨✨✨ 重点修复：手动跳转到主页 ✨✨✨
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => MainScreen(
+              isDark: widget.isDark,
+              onThemeChanged: widget.onThemeChanged,
+            ),
           ),
         );
       }
 
     } on AuthException catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
-        );
-      }
+      if (mounted) _showMsg(e.message, isError: true);
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('发生错误: $e'), backgroundColor: Colors.red),
-        );
-      }
+      if (mounted) _showMsg('发生错误: $e', isError: true);
     } finally {
       if (mounted) {
         setState(() {
@@ -77,72 +80,133 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _showMsg(String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? Colors.red[900] : _accentGreen,
+        behavior: SnackBarBehavior.floating, // 悬浮样式更高级
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 强制深色背景
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.lock_person, size: 80, color: Colors.green),
-              const SizedBox(height: 20),
-              Text(
-                _isLoginMode ? '霍格沃茨校门' : '新生入学注册',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 40),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: '邮箱',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: '密码',
-                  prefixIcon: Icon(Icons.key),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          _isLoginMode ? '进入学院' : '提交申请',
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isLoginMode = !_isLoginMode;
-                  });
-                },
-                child: Text(
-                  _isLoginMode ? '还没有账号？点此注册' : '已有账号？点此登录',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 1.5,
+            colors: [
+              Color(0xFF0D3A28), // 深绿中心
+              Color(0xFF000000), // 纯黑边缘
             ],
           ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 顶部图标
+                Icon(Icons.lock_outline, size: 60, color: _textSilver),
+                const SizedBox(height: 20),
+
+                // 标题
+                Text(
+                  _isLoginMode ? '推开真理之扉' : '静候智者',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w300,
+                    color: _textSilver,
+                    letterSpacing: 4,
+                    fontFamily: 'Serif',
+                  ),
+                ),
+                const SizedBox(height: 50),
+
+                // 输入框 1
+                _buildTextField(_emailController, '邮箱', Icons.email_outlined),
+                const SizedBox(height: 20),
+
+                // 输入框 2
+                _buildTextField(_passwordController, '密码', Icons.key_outlined, isObscure: true),
+
+                const SizedBox(height: 40),
+
+                // 登录按钮
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _accentGreen, // 祖母绿按钮
+                      foregroundColor: Colors.white,
+                      elevation: 10,
+                      shadowColor: _accentGreen.withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                    )
+                        : Text(
+                      _isLoginMode ? '启程' : '提交申请',
+                      style: const TextStyle(fontSize: 16, letterSpacing: 2),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // 切换模式
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isLoginMode = !_isLoginMode;
+                    });
+                  },
+                  child: Text(
+                    _isLoginMode ? '初来乍到？由此入道' : '已有身份？由此归位',
+                    style: TextStyle(color: _textSilver.withOpacity(0.6), fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 封装一个好看的输入框样式
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool isObscure = false}) {
+    return TextField(
+      controller: controller,
+      obscureText: isObscure,
+      style: TextStyle(color: _textSilver), // 输入文字颜色
+      cursorColor: _accentGreen,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: _textSilver.withOpacity(0.5)),
+        prefixIcon: Icon(icon, color: _accentGreen),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05), // 半透明背景
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: _textSilver.withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: _accentGreen), // 选中变绿
         ),
       ),
     );

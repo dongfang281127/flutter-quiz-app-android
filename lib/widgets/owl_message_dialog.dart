@@ -26,7 +26,7 @@ class _OwlMessageDialogState extends State<OwlMessageDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "发现了错误？还是想点赞？\n作者会在个人中心看到你的消息。",
+            "不吝赐教\n有什么思绪或建议，请在此落笔...",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(height: 10),
@@ -63,7 +63,7 @@ class _OwlMessageDialogState extends State<OwlMessageDialog> {
             Navigator.of(context).pop(text);
           },
           icon: const Icon(Icons.send, size: 16),
-          label: const Text('发送猫头鹰'),
+          label: const Text('发送'),
         ),
       ],
     );

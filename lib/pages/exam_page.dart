@@ -260,11 +260,11 @@ class _ExamPageState extends State<ExamPage> {
     final String? message = await showDialog<String>(context: context, builder: (context) => const OwlMessageDialog());
     if (message == null) return;
     try {
-      String nickname = user.userMetadata?['display_name'] ?? "神秘巫师";
+      String nickname = user.userMetadata?['display_name'] ?? "神秘智者";
       await _examService.sendOwlMessage(
           senderId: user.id, receiverId: currentQ.createdBy!, senderNickname: nickname,
           groupName: currentQ.groupName ?? "未知", messageContent: message, questionContent: currentQ.text);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('猫头鹰已起飞！✅'), backgroundColor: Colors.green));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('已发送！✅'), backgroundColor: Colors.green));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('发送失败: $e')));
     }

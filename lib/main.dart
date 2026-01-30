@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// ✨ 1. 引入 dotenv 包
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'theme/app_theme.dart';
-import 'pages/login_page.dart';
-import 'pages/main_screen.dart';
+import 'pages/splash_page.dart'; // 开屏页
+import 'pages/login_page.dart';  // ✨ 必须引入登录页，用于强制跳转
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✨ 2. 加载环境变量文件
   await dotenv.load(fileName: ".env");
 
-  // ✨ 3. 使用环境变量里的值
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL'] ?? '', // 如果读不到给个空字符串防报错
+    url: dotenv.env['SUPABASE_URL'] ?? '',
     anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
 
   runApp(const MyApp());
 }
 
-// ... 下面的代码保持不变 ...
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  // ✨ 1. 定义一把“万能钥匙”
+  // 它可以让我们在任何地方（比如监听器里）控制页面跳转
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -37,10 +36,26 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // ✨✨✨ 核心魔法：设置监听器 ✨✨✨
-    // 这就像在门口放了一个守卫，只要登录状态发生变化（比如登录了，或者退出了）
-    // 它就会喊一声 setState，刷新界面。
+    // 监听登录状态变化
     Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final event = data.event;
+
+      // ✨✨✨ 核心修复代码 ✨✨✨
+      // 如果检测到“用户退出了” (SIGNED_OUT)
+      if (event == AuthChangeEvent.signedOut) {
+        // 使用万能钥匙，强制清空所有页面，跳转到登录页
+        MyApp.navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => LoginPage(
+              isDark: _isDarkTheme,
+              onThemeChanged: _toggleTheme,
+            ),
+          ),
+              (route) => false, // 这里的 false 表示删掉之前所有的页面记录
+        );
+      }
+
+      // 保持原本的 setState 用来更新 UI
       if (mounted) {
         setState(() {});
       }
@@ -56,21 +71,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '魔法刷题',
+      // ✨ 2. 把钥匙交给 MaterialApp
+      navigatorKey: MyApp.navigatorKey,
+
+      title: '问道', // 你的 App 名字
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: _isDarkTheme ? ThemeMode.dark : ThemeMode.light,
 
-      // ✨✨✨ 修复点：.session 改为 .auth.currentSession ✨✨✨
-      // 如果 currentSession 不为空，说明有通行证 -> 进主页
-      // 否则 -> 去登录页
-      home: Supabase.instance.client.auth.currentSession != null
-          ? MainScreen(
+      // 启动时依然先去开屏页
+      home: SplashPage(
         isDark: _isDarkTheme,
         onThemeChanged: _toggleTheme,
-      )
-          : const LoginPage(),
+      ),
     );
   }
 }
